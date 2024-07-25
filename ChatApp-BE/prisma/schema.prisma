@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ChatApp_Users {
+  id               String             @id @default(cuid())
+  username         String
+  email            String             @unique
+  image            String
+  password         String
+  online           Boolean            @default(false)
+  createAt         DateTime           @default(now())
+  ChatApp_Messages ChatApp_Messages[]
+}
+
+model ChatApp_Messages {
+  id              String        @id @default(cuid())
+  conversationsId String
+  senderId        String
+  message         String
+  createAt        DateTime      @default(now())
+  senderData      ChatApp_Users @relation(fields: [senderId], references: [id])
+}
+
+model ChatApp_Conversations {
+  id       String   @id @default(cuid())
+  members  String[]
+  updateAt DateTime @default(now())
+  createAt DateTime @default(now())
+}
